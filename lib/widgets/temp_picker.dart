@@ -16,28 +16,34 @@ class TempPicker extends StatefulWidget {
     @required this.minValue,
     @required this.maxValue,
     @required this.tickValue,
-    this.defaultValue,
+    defaultValue,
     this.color = Colors.black,
     this.borderSize = 3,
-  });
+  }) : this.defaultValue = defaultValue ?? ((maxValue - minValue) / 2) + minValue;
 
   @override
   _TempPickerState createState() => new _TempPickerState();
 }
 
 class _TempPickerState extends State<TempPicker> {
+  Offset _tapPos;
+
   @override
   Widget build(final BuildContext context) {
     return new Container(
       constraints: new BoxConstraints.expand(),
-      child: new CustomPaint(
-        painter: new _TempPainter(
-          minValue: widget.minValue,
-          maxValue: widget.maxValue,
-          tickValue: widget.tickValue,
-          defaultValue: widget.defaultValue,
-          color: widget.color,
-          borderSize: widget.borderSize,
+      child: new GestureDetector(
+        onPanUpdate: (details) => setState(() => _tapPos = details.globalPosition),
+        child: new CustomPaint(
+          painter: new _TempPainter(
+            minValue: widget.minValue,
+            maxValue: widget.maxValue,
+            tickValue: widget.tickValue,
+            defaultValue: widget.defaultValue,
+            tapPosition: _tapPos,
+            color: Theme.of(context).primaryColor,
+            borderSize: widget.borderSize,
+          ),
         ),
       ),
     );
@@ -56,6 +62,7 @@ class _TempPainter extends CustomPainter {
   final num maxValue;
   final num tickValue;
   final num defaultValue;
+  final Offset tapPosition;
   final Color color;
   final int borderSize;
 
@@ -67,9 +74,20 @@ class _TempPainter extends CustomPainter {
     @required this.maxValue,
     @required this.tickValue,
     @required this.defaultValue,
+    @required this.tapPosition,
     @required this.color,
     @required this.borderSize,
   });
+
+  // Take the given position and center and compute the angle (in radius)
+  // from the center to the position
+  num getAngleFromPosition(final Offset pos, final Offset center) {
+    final Offset relPos = pos - center;
+    final num distance = relPos.distance;
+    final Offset normalized = new Offset(relPos.dx / distance, relPos.dy / distance);
+    final num angle = atan2(normalized.dy, normalized.dx);
+    return angle;
+  }
 
   @override
   void paint(final Canvas canvas, final Size size) {
@@ -78,10 +96,10 @@ class _TempPainter extends CustomPainter {
     ;
 
     // Compute the center from the size provided
-    final center = size.center(new Offset(0.0, 0.0));
+    final center = size.center(Offset.zero);
 
     // Compute the radius by taking half of either the widget or height, whichever is smallest
-    final radius = size.width < size.height ? size.width / 2 : size.height / 2;
+    final radius = size.shortestSide / 2;
 
     // Draw border by filling in a circle, subtracting the border, and filling in another
     canvas.drawCircle(center, radius, paint);
@@ -92,40 +110,55 @@ class _TempPainter extends CustomPainter {
 
     // Iterate over each tick by angle
     for (num angle = _startAngle; angle <= _endAngle; angle += _tickAngle) {
-      // Create a vector pointing from the center to the tick
-      final Offset vector = _offsetFromAngle(angle);
-
-      // Compute the tick's starting position by multiplying its magnitude by the components of the angle vector
-      final tickStartMagnitude = radius - _tickLength;
-      final tickStart = center + new Offset(
-        tickStartMagnitude * vector.dx,
-        tickStartMagnitude * vector.dy
-      );
-
-      // Compute the tick's ending position by multiplying its magnitude by the components of the angle vector
-      final tickEndMagnitude = radius;
-      final tickEnd = center + new Offset(
-        tickEndMagnitude * vector.dx,
-        tickEndMagnitude * vector.dy
-      );
-
-      // Get perpendicular vectors of the tick vector
-      final Offset rotated = _rotateOffset(vector, PI / 2); // Rotate 90 degrees
-      final Offset inverted = _invertOffset(rotated); // Invert after rotation
-
-      // Create a polygon by extending the perpendicular vectors slightly away from the tick points
-      canvas.drawPath(new Path()..addPolygon([
-        tickStart + (rotated * _tickThickness),
-        tickStart + (inverted * _tickThickness),
-        tickEnd + (inverted * _tickThickness),
-        tickEnd + (rotated * _tickThickness)
-      ], true), paint);
+      _drawTickFromAngle(canvas, center, angle, radius - _tickLength, radius, paint);
     }
+
+    // Draw current value tick
+    final angle = tapPosition == null ? defaultValue : getAngleFromPosition(tapPosition, center);
+    _drawTickFromAngle(canvas, center, angle, radius - (3 * _tickLength), radius, paint);
+  }
+
+  void _drawTickFromAngle(final Canvas canvas, final Offset center,
+      final num angle, final num startRadius, final num endRadius,
+      final Paint paint) {
+    // Create a vector pointing from the center to the tick
+    final Offset vector = _offsetFromAngle(angle);
+
+    // Compute the tick's starting position by multiplying its magnitude by the components of the angle vector
+    final tickStart = center + new Offset(
+      startRadius * vector.dx,
+      startRadius * vector.dy
+    );
+
+    // Compute the tick's ending position by multiplying its magnitude by the components of the angle vector
+    final tickEnd = center + new Offset(
+      endRadius * vector.dx,
+      endRadius * vector.dy
+    );
+
+    // Get perpendicular vectors of the tick vector
+    final Offset rotated = _rotateOffset(vector, PI / 2); // Rotate 90 degrees
+    final Offset inverted = _invertOffset(rotated); // Invert after rotation
+
+    // Create a polygon by extending the perpendicular vectors slightly away from the tick points
+    canvas.drawPath(new Path()..addPolygon([
+      tickStart + (rotated * _tickThickness),
+      tickStart + (inverted * _tickThickness),
+      tickEnd + (inverted * _tickThickness),
+      tickEnd + (rotated * _tickThickness)
+    ], true), paint);
   }
 
   @override
-  bool shouldRepaint(final CustomPainter oldDelegate) {
-    return false; // Can't change yet
+  bool shouldRepaint(final _TempPainter oldPainter) {
+    return minValue != oldPainter.minValue
+      || maxValue != oldPainter.maxValue
+      || tickValue != oldPainter.tickValue
+      || defaultValue != oldPainter.defaultValue
+      || tapPosition != oldPainter.tapPosition
+      || color != oldPainter.color
+      || borderSize != oldPainter.borderSize
+    ;
   }
 }
 
