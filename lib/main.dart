@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
     return new MaterialApp(
       title: "Thermo",
       theme: new ThemeData(primarySwatch: Colors.blue),
-      home: new HomeScreen(title: "Thermostat"),
+      home: new HomeScreen(title: "Thermo"),
     );
   }
 }
