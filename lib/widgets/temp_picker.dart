@@ -1,8 +1,6 @@
 import 'dart:math';
-import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/rendering/proxy_box.dart';
 
 class TempPicker extends StatefulWidget {
   final num minValue;
@@ -26,10 +24,20 @@ class TempPicker extends StatefulWidget {
 }
 
 class _TempPickerState extends State<TempPicker> {
+  num _temp;
   Offset _tapPos;
 
   @override
+  void initState() {
+    super.initState();
+
+    _temp = widget.defaultValue;
+  }
+
+  @override
   Widget build(final BuildContext context) {
+    final Color color = Theme.of(context).primaryColor;
+
     return new Container(
       constraints: new BoxConstraints.expand(),
       child: new GestureDetector(
@@ -41,8 +49,16 @@ class _TempPickerState extends State<TempPicker> {
             tickValue: widget.tickValue,
             defaultValue: widget.defaultValue,
             tapPosition: _tapPos,
-            color: Theme.of(context).primaryColor,
+            color: color,
             borderSize: widget.borderSize,
+          ),
+          child: new Center(
+            child: new Text("$_temp°F",
+              style: new TextStyle(
+                fontSize: 68.0,
+                color: color
+              ),
+            ),
           ),
         ),
       ),
@@ -104,9 +120,6 @@ class _TempPainter extends CustomPainter {
     // Draw border by filling in a circle, subtracting the border, and filling in another
     canvas.drawCircle(center, radius, paint);
     canvas.drawCircle(center, radius - borderSize, new Paint()..color = Colors.white);
-
-    // Draw center point
-    canvas.drawCircle(center, 10.0, new Paint()..color = Colors.red);
 
     // Iterate over each tick by angle
     for (num angle = _startAngle; angle <= _endAngle; angle += _tickAngle) {
