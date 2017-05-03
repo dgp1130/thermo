@@ -26,6 +26,7 @@ class TempPicker extends StatefulWidget {
 class _TempPickerState extends State<TempPicker> {
   num _temp;
   Offset _tapPos;
+  final GlobalKey _paintKey = new GlobalKey();
 
   @override
   void initState() {
@@ -41,8 +42,14 @@ class _TempPickerState extends State<TempPicker> {
     return new Container(
       constraints: new BoxConstraints.expand(),
       child: new GestureDetector(
-        onPanUpdate: (details) => setState(() => _tapPos = details.globalPosition),
+        onPanUpdate: (details) {
+          setState(() {
+            RenderBox box = _paintKey.currentContext.findRenderObject();
+            _tapPos = box.globalToLocal(details.globalPosition);
+          });
+        },
         child: new CustomPaint(
+          key: _paintKey,
           painter: new _TempPainter(
             minValue: widget.minValue,
             maxValue: widget.maxValue,
