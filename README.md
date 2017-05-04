@@ -1,8 +1,17 @@
-# Thermostat
+# Thermo
 
-A new flutter project.
+Basic "smart-thermostat". Able to control a thermostat remotely.
 
-## Getting Started
+## Install
 
-For help getting started with Flutter, view our online
-[documentation](http://flutter.io/).
+Install Flutter, protoc, and the Dart protoc plugin.
+
+```bash
+$ make install
+```
+
+## Running
+
+```bash
+$ flutter run
+```
