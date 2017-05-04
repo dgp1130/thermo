@@ -41,7 +41,11 @@ class _TempPickerState extends State<TempPicker> {
     return new Container(
       constraints: new BoxConstraints.expand(),
       child: new GestureDetector(
-        onPanUpdate: (details) => setState(() => _tapPos = details.globalPosition),
+        onPanUpdate: (details) => setState(() {
+          // Convert global position to relative
+          final RenderBox renderBox = context.findRenderObject();
+          _tapPos = renderBox.globalToLocal(details.globalPosition);
+        }),
         child: new CustomPaint(
           painter: new _TempPainter(
             minValue: widget.minValue,

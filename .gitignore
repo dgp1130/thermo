@@ -25,3 +25,6 @@ pubspec.lock
 # Gradle:
 .idea/**/gradle.xml
 .idea/**/libraries
+
+# App specific
+/protos/out

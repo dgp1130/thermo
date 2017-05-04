@@ -1,4 +1,4 @@
-package com.yourcompany.Thermostat;
+package com.douglasgparker.thermo;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;

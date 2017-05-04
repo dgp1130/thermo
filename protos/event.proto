@@ -1,0 +1,16 @@
+message Event {
+    optional int32 temp = 1;
+    optional int64 startTime = 2;
+    optional int64 endTime = 3;
+    repeated DayOfWeek days = 4;
+
+    enum DayOfWeek {
+        Sunday = 0;
+        Monday = 1;
+        Tuesday = 2;
+        Wednesday = 3;
+        Thursday = 4;
+        Friday = 5;
+        Saturday = 6;
+    }
+}

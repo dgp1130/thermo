@@ -1,7 +1,8 @@
-name: Thermostat
+name: Thermo
 description: A new flutter project.
 
 dependencies:
+  protobuf:
   flutter:
     sdk: flutter
 

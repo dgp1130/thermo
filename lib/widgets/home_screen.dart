@@ -1,4 +1,6 @@
+import "../../protos/out/event.pb.dart";
 import "../models/screen.dart";
+import "../utils/api.dart" as api;
 import "package:flutter/material.dart";
 import "schedule_screen.dart";
 import "temp_screen.dart";
@@ -14,6 +16,14 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _innerScreenIndex = 0;
+  List<Event> _events;
+
+  @override
+  void initState() {
+    super.initState();
+
+    api.fetchEvents().then((events) => setState(() => _events = events));
+  }
 
   @override
   Widget build(final BuildContext context) {
@@ -30,10 +40,16 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-}
 
-Widget _buildBody(final Screen screen) {
-  if (screen == Screen.temperature) return new TempScreen();
-  else if (screen == Screen.schedule) return new ScheduleScreen();
-  else throw new ArgumentError("Unknown screen: " + screen.toString());
+  Widget _buildBody(final Screen screen) {
+    if (screen == Screen.temperature) return new TempScreen();
+    else if (screen == Screen.schedule) return _events != null ? new ScheduleScreen(_events) : _buildLoadingScreen();
+    else throw new ArgumentError("Unknown screen: " + screen.toString());
+  }
+
+  Widget _buildLoadingScreen() {
+    return new Center(
+      child: new CircularProgressIndicator()
+    );
+  }
 }
