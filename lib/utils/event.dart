@@ -1,4 +1,4 @@
-import '../../protos/out/event.pb.dart';
+import "package:Thermo/protos/event.pb.dart";
 
 const Map<Event_DayOfWeek, String> _dayAbbrMap = const <Event_DayOfWeek, String>{
   Event_DayOfWeek.Sunday: "U",

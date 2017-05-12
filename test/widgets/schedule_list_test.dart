@@ -1,5 +1,5 @@
-import "../../lib/widgets/schedule_list_view.dart";
-import "../../protos/out/event.pb.dart";
+import "package:Thermo/widgets/schedule_list_view.dart";
+import "package:Thermo/protos/event.pb.dart";
 import "package:fixnum/fixnum.dart";
 import "package:flutter/material.dart";
 import "package:flutter_test/flutter_test.dart";

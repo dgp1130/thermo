@@ -27,4 +27,4 @@ pubspec.lock
 .idea/**/libraries
 
 # App specific
-/protos/out
+/lib/protos

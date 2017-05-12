@@ -1,22 +1,23 @@
 import "dart:async";
 import "dart:math";
+import 'package:Thermo/models/temp.dart';
 import "package:Thermo/widgets/multi_painter.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 
-typedef void OnTempChanged(num temp);
+typedef void OnTempChanged(Temp temp);
 
 /// Widget to render a temperature picker which looks like a thermostat.
 class TempPicker extends StatefulWidget {
-  final num minValue;
-  final num maxValue;
-  final num defaultValue;
+  final Temp minValue;
+  final Temp maxValue;
+  final Temp defaultValue;
   final int borderSize;
   final Color color;
   final Color bgColor;
   final OnTempChanged onTempChanged;
 
-  num get rangeValue => maxValue - minValue;
+  num get rangeValue => maxValue.degCelsius - minValue.degCelsius;
 
   TempPicker({
     @required this.minValue,
@@ -26,13 +27,15 @@ class TempPicker extends StatefulWidget {
     this.color,
     this.bgColor : Colors.white,
     this.onTempChanged,
-  }) : this.defaultValue = defaultValue ?? ((maxValue - minValue) / 2) + minValue {
+  }) : this.defaultValue = defaultValue
+      ?? new Temp.fromCelsius(((maxValue.degCelsius - minValue.degCelsius) / 2) + minValue.degCelsius)
+  {
     if (minValue > maxValue) {
       throw new ArgumentError("minValue ($minValue) must be smaller than"
           " maxValue ($maxValue).");
     }
 
-    if (defaultValue < minValue || defaultValue > maxValue) {
+    if (this.defaultValue < minValue || this.defaultValue > maxValue) {
       throw new ArgumentError("defaultValue ($defaultValue) must be greater than"
           " minValue ($minValue) and smaller than maxValue ($maxValue).");
     }
@@ -61,7 +64,7 @@ class _TempPickerState extends State<TempPicker> {
     super.initState();
 
     // Initialize to current value
-    _currentAngle = _getAngleFromValue(widget.defaultValue);
+    _currentAngle = _getAngleFromValue(widget.defaultValue.degCelsius);
   }
 
   // Compute the angle from the center of the widget to the given global position
@@ -100,7 +103,7 @@ class _TempPickerState extends State<TempPicker> {
 
   // Convert the given value into an angle
   num _getAngleFromValue(final num value) {
-    return (((value - widget.minValue) / widget.rangeValue) * _rangeAngle) + _startAngle;
+    return (((value - widget.minValue.degCelsius) / widget.rangeValue) * _rangeAngle) + _startAngle;
   }
 
   // Convert the given angle into a value
@@ -115,13 +118,13 @@ class _TempPickerState extends State<TempPicker> {
     final num ratio = (_limitAngle(correctedAngle) - _startAngle).abs() / _rangeAngle;
 
     // Convert this ratio into a value
-    return (ratio * widget.rangeValue) + widget.minValue;
+    return (ratio * widget.rangeValue) + widget.minValue.degCelsius;
   }
 
   // Update the current value and notify observers
   void _onUpdate(final Offset globalPos) {
     setState(() => _currentAngle = _getAngleFromTapPos(context, globalPos));
-    widget.onTempChanged?.call(_currentValue);
+    widget.onTempChanged?.call(new Temp.fromCelsius(_currentValue));
   }
 
   @override
@@ -166,7 +169,10 @@ class _TempPickerState extends State<TempPicker> {
             thickness: _tickThickness,
           )),
           child: new Center(
-            child: new Text("${_currentValue.round()}°F",
+            child: new Text(
+              TempUnit.fahrenheit.format(
+                new Temp.fromCelsius(_currentValue).degFahrenheit.round()
+              ),
               style: new TextStyle(
                 fontSize: 68.0,
                 color: paint.color,

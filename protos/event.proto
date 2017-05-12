@@ -1,9 +1,12 @@
 syntax = "proto2";
 
+import "protos/temp.proto";
+import "protos/time_of_day.proto";
+
 message Event {
-    optional int32 temp = 1;
-    optional int64 startTime = 2;
-    optional int64 endTime = 3;
+    optional Temp temp = 1;
+    optional TimeOfDay startTime = 2;
+    optional TimeOfDay endTime = 3;
     repeated DayOfWeek days = 4;
 
     enum DayOfWeek {

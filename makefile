@@ -1,9 +1,8 @@
 PROTOC=protoc
 PROTO_IN=protos
-PROTO_OUT=out
+PROTO_OUT=lib
 
 install: build-protos
 
 build-protos:
-	mkdir -p "${PROTO_IN}/${PROTO_OUT}"
-	(cd ${PROTO_IN} && ${PROTOC} --dart_out=${PROTO_OUT} *.proto)
+	${PROTOC} --dart_out=${PROTO_OUT} ${PROTO_IN}/*.proto

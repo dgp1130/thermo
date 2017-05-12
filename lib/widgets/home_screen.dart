@@ -1,9 +1,9 @@
-import "../../protos/out/event.pb.dart";
-import "../models/screen.dart";
-import "../utils/api.dart" as api;
+import "package:Thermo/models/event.dart";
+import "package:Thermo/models/screen.dart";
+import "package:Thermo/utils/api.dart" as api;
+import "package:Thermo/widgets/schedule_screen.dart";
+import "package:Thermo/widgets/temp_screen.dart";
 import "package:flutter/material.dart";
-import "schedule_screen.dart";
-import "temp_screen.dart";
 
 class HomeScreen extends StatefulWidget {
   final String title;

@@ -1,0 +1,5 @@
+syntax = "proto2";
+
+message Temp {
+    optional int32 celsius = 1;
+}

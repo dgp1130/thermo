@@ -1,5 +1,5 @@
-import "../../protos/out/event.pb.dart";
-import 'package:flutter/foundation.dart';
+import "package:Thermo/models/event.dart";
+import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "schedule_list_item.dart";
 
