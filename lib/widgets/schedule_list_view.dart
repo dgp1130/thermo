@@ -26,7 +26,7 @@ class ScheduleListView extends StatelessWidget {
         child: new Column(
           children: <Widget>[
             new ScheduleListItem(
-              key: new Key("schedule_list_item:${event.temp}"),
+              key: new Key("schedule_list_item:${event.temp.degFahrenheit.round()}"),
               event: event,
               onTapped: _onTap,
             ),
