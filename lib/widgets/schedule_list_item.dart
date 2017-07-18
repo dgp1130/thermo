@@ -1,7 +1,7 @@
+import "package:Thermo/models/day_of_week.dart";
 import "package:Thermo/models/event.dart";
 import "package:Thermo/models/temp.dart";
 import "package:Thermo/utils/event.dart" as events_util;
-import "package:Thermo/protos/event.pbenum.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 
@@ -39,7 +39,7 @@ class ScheduleListItem extends StatelessWidget {
                 new RichText(
                   text: new TextSpan(
                     style: DefaultTextStyle.of(context).style,
-                    children: Event_DayOfWeek.values.map((day) => new TextSpan(
+                    children: DayOfWeek.values.map((day) => new TextSpan(
                       text: events_util.getAbbreviation(day),
                       style: new TextStyle(
                         color: event.days.contains(day) ? Colors.black : Colors.grey,

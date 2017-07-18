@@ -1,5 +1,3 @@
-import "dart:convert";
-
 /// Model representing a temperature value.
 class Temp {
   final num degCelsius;
@@ -11,13 +9,11 @@ class Temp {
   const Temp.fromKelvin(final num kel) : degCelsius = kel + 273.15;
 
   /// Deserialize a new model from the given JSON format
-  Temp.fromJson(final String json) : degCelsius = JSON.decode(json).temp;
+  Temp.fromJson(final num degCel) : this.fromCelsius(degCel);
 
   /// Serialize to JSON
-  String toJson() {
-    return JSON.encode({
-      "temp": degCelsius,
-    });
+  num toJson() {
+    return degCelsius;
   }
 
   static num _celToFaren(final num cel) {

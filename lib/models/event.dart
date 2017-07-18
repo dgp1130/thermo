@@ -1,12 +1,13 @@
+import "dart:convert";
+import "package:Thermo/models/day_of_week.dart";
 import "package:Thermo/models/temp.dart";
 import "package:Thermo/models/time_of_day.dart";
-import "package:Thermo/protos/event.pb.dart" as pb;
 import "package:meta/meta.dart";
 
 /// Model representing an Event which specifies the temperature for a given
 /// time frame repeated over several days a week.
 class Event {
-  final Set<pb.Event_DayOfWeek> days;
+  final Set<DayOfWeek> days;
   final TimeOfDay startTime;
   final TimeOfDay endTime;
   final Temp temp;
@@ -19,33 +20,33 @@ class Event {
   });
 
   /// Construct an Event from a protobuf format
-  Event.fromPb(final pb.Event event)
-      : this.days = event.days.toSet(),
-        this.startTime = new TimeOfDay.fromPb(event.startTime),
-        this.endTime = new TimeOfDay.fromPb(event.endTime),
-        this.temp = new Temp.fromPb(event.temp)
+  Event.fromJson(final Map<String, Object> json)
+      : this.days = (json["days"] as Iterable<String>).map((day) => new DayOfWeek.fromJson(day)),
+        this.startTime = new TimeOfDay.fromJson(json["startTime"] as Map<String, int>),
+        this.endTime = new TimeOfDay.fromJson(json["endTime"] as Map<String, int>),
+        this.temp = new Temp.fromJson(json["temp"] as num)
   ;
 
-  /// Construct a protobuf from this Event
+  /// Serialize this event to JSON
   @override
-  pb.Event toPb() {
-    return new pb.Event()
-      ..days.addAll(days.toList())
-      ..startTime = startTime.toPb()
-      ..endTime = endTime.toPb()
-      ..temp = temp.toPb()
-    ;
+  Map<String, Object> toJson() {
+    return {
+      "days": days.map((day) => JSON.encode(day)),
+      "startTime": startTime.toJson(),
+      "endTime": endTime.toJson(),
+      "temp": temp.toJson(),
+    };
   }
 }
 
 /// Builder class for the Event model
 class EventBuilder {
-  Set<pb.Event_DayOfWeek> _days = new Set<pb.Event_DayOfWeek>();
+  Set<DayOfWeek> _days = new Set<DayOfWeek>();
   TimeOfDay _startTime;
   TimeOfDay _endTime;
   Temp _temp;
 
-  Set<pb.Event_DayOfWeek> get days => _days;
+  Set<DayOfWeek> get days => _days;
 
   set startTime(final TimeOfDay time) => _startTime = time;
 

@@ -1,15 +1,15 @@
-import "package:Thermo/protos/event.pb.dart";
+import "package:Thermo/models/day_of_week.dart";
 
-const Map<Event_DayOfWeek, String> _dayAbbrMap = const <Event_DayOfWeek, String>{
-  Event_DayOfWeek.Sunday: "U",
-  Event_DayOfWeek.Monday: "M",
-  Event_DayOfWeek.Tuesday: "T",
-  Event_DayOfWeek.Wednesday: "W",
-  Event_DayOfWeek.Thursday: "R",
-  Event_DayOfWeek.Friday: "F",
-  Event_DayOfWeek.Saturday: "S",
+const Map<DayOfWeek, String> _dayAbbrMap = const <DayOfWeek, String>{
+  DayOfWeek.SUNDAY: "U",
+  DayOfWeek.MONDAY: "M",
+  DayOfWeek.TUESDAY: "T",
+  DayOfWeek.WEDNESDAY: "W",
+  DayOfWeek.THURSDAY: "R",
+  DayOfWeek.FRIDAY: "F",
+  DayOfWeek.SATURDAY: "S",
 };
 
-String getAbbreviation(final Event_DayOfWeek day) {
+String getAbbreviation(final DayOfWeek day) {
   return _dayAbbrMap[day];
 }

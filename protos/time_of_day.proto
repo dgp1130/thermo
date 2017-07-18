@@ -1,6 +1,0 @@
-syntax = "proto2";
-
-message TimeOfDay {
-    optional int32 hour = 1;
-    optional int32 minute = 2;
-}

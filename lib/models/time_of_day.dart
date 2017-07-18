@@ -1,4 +1,3 @@
-import "package:Thermo/protos/time_of_day.pb.dart" as pb;
 import "package:flutter/material.dart" as material;
 
 class TimeOfDay extends material.TimeOfDay {
@@ -8,14 +7,14 @@ class TimeOfDay extends material.TimeOfDay {
   TimeOfDay.fromMaterial(final material.TimeOfDay time)
       : super(hour: time.hour, minute: time.minute);
 
-  TimeOfDay.fromPb(final pb.TimeOfDay time)
-      : super(hour: time.hour, minute: time.minute);
+  TimeOfDay.fromJson(final Map<String, int> json)
+      : super(hour: json["hour"], minute: json["minute"]);
 
-  pb.TimeOfDay toPb() {
-    return new pb.TimeOfDay()
-      ..hour = hour
-      ..minute = minute
-    ;
+  Map<String, int> toJson() {
+    return <String, int>{
+      "hour": hour,
+      "minute": minute,
+    };
   }
 
   @override

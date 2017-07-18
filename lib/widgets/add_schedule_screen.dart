@@ -1,8 +1,8 @@
 import "dart:async";
+import "package:Thermo/models/day_of_week.dart";
 import "package:Thermo/models/event.dart";
 import "package:Thermo/models/temp.dart";
 import "package:Thermo/models/time_of_day.dart";
-import "package:Thermo/protos/event.pbenum.dart";
 import "package:Thermo/utils/event.dart" as event_util;
 import "package:Thermo/widgets/dialogs/alert_message_dialog.dart";
 import "package:Thermo/widgets/dialogs/temp_picker_dialog.dart";
@@ -15,7 +15,7 @@ class AddScheduleScreen extends StatefulWidget {
 
 class _AddScheduleState extends State<AddScheduleScreen> with TempPickerDialog,
     AlertMessageDialog {
-  final Set<Event_DayOfWeek> _days = new Set<Event_DayOfWeek>();
+  final Set<DayOfWeek> _days = new Set<DayOfWeek>();
   TimeOfDay _startTime = new TimeOfDay(hour: 12, minute: 0);
   TimeOfDay _endTime = new TimeOfDay(hour: 12, minute: 0);
   Temp _temp = const Temp.fromFahrenheit(72.0);
@@ -47,7 +47,7 @@ class _AddScheduleState extends State<AddScheduleScreen> with TempPickerDialog,
           children: <Widget>[
             // List of days of the week
             new Row(
-              children: Event_DayOfWeek.values.map((day) => new Expanded(
+              children: DayOfWeek.values.map((day) => new Expanded(
                 child: new Column(
                   children: <Widget>[
                     new Text(event_util.getAbbreviation(day)),

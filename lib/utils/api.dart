@@ -1,9 +1,10 @@
 import "dart:async";
+import "dart:convert";
 import "package:flutter/services.dart";
+import "package:Thermo/models/day_of_week.dart";
 import "package:Thermo/models/event.dart";
 import "package:Thermo/models/temp.dart";
 import "package:Thermo/models/time_of_day.dart";
-import "package:Thermo/protos/event.pbenum.dart";
 
 const String _protocol = "http";
 const String _thermoThing = "192.168.1.7";
@@ -33,7 +34,9 @@ Future<Temp> fetchDesiredTemp() async {
 // Post the given temperature to the ThermoThing server as the desired temperature
 Future postDesiredTemp(final Temp temp) async {
   final http = createHttpClient();
-  final res = await http.post("${_getThermoThingHost()}/desired-temp", body: temp.toJson());
+  final res = await http.post("${_getThermoThingHost()}/desired-temp", body: JSON.encode({
+    "temp": temp.toJson()
+  }));
 
   if (res.statusCode != _HTTP.OK) {
     throw new Exception("Received HTTP ${res.statusCode}.\n${res.body}");
@@ -47,12 +50,12 @@ Future<List<Event>> fetchEvents() async {
     ..temp = new Temp.fromFahrenheit(70 + val)
     ..startTime = new TimeOfDay(hour: 12 + val, minute: 20 + val)
     ..endTime = new TimeOfDay(hour: 13 + val, minute: 40 + val)
-    ..days.addAll(const <Event_DayOfWeek>[
-      Event_DayOfWeek.Monday,
-      Event_DayOfWeek.Tuesday,
-      Event_DayOfWeek.Wednesday,
-      Event_DayOfWeek.Thursday,
-      Event_DayOfWeek.Friday,
+    ..days.addAll(const <DayOfWeek>[
+      DayOfWeek.MONDAY,
+      DayOfWeek.TUESDAY,
+      DayOfWeek.WEDNESDAY,
+      DayOfWeek.THURSDAY,
+      DayOfWeek.FRIDAY,
     ])
   ).build()).toList();
 }
