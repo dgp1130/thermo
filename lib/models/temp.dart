@@ -1,4 +1,4 @@
-import "package:Thermo/protos/temp.pb.dart" as pb;
+import "dart:convert";
 
 /// Model representing a temperature value.
 class Temp {
@@ -10,14 +10,14 @@ class Temp {
   const Temp.fromFahrenheit(final num faren) : degCelsius = (faren - 32) * (5 / 9);
   const Temp.fromKelvin(final num kel) : degCelsius = kel + 273.15;
 
-  /// Construct a new model from the given protobuf format
-  Temp.fromPb(final pb.Temp temp) : degCelsius = temp.celsius;
+  /// Deserialize a new model from the given JSON format
+  Temp.fromJson(final String json) : degCelsius = JSON.decode(json).temp;
 
-  /// Construct a protobuf from this model
-  pb.Temp toPb() {
-    return new pb.Temp()
-      ..celsius = degCelsius
-    ;
+  /// Serialize to JSON
+  String toJson() {
+    return JSON.encode({
+      "temp": degCelsius,
+    });
   }
 
   static num _celToFaren(final num cel) {
